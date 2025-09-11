@@ -1,18 +1,18 @@
-const authorDbModel = require('../models/author');
-const articleDbModel = require('../models/article');
+const BaseSQLModel = require('./base');
 
-const authorModel = new authorDbModel();
-const articleModel = new articleDbModel();
-
-class articleController {
+class authorModel extends BaseSQLModel {
     constructor() {
-        const articles = []
+        super('author');
     }
-    async getAuthorById(req, res) { 
-        const author = await authorModel.findById(req.params.id);
-        const articles = await articleModel.findMany(author)
-        author['articles'] = articles
-        res.status(201).json({ author: author });
+
+    async findAll() {
+        const authors = await super.findAll();
+        return authors;
+    }
+
+    async findById(id) {
+        const author = await super.findById(id);
+        return author;
     }
 }
-module.exports = authorController
+module.exports = authorModel;
