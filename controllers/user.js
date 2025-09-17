@@ -43,7 +43,7 @@ class userController {
         }
     }
 
-        async loginUser(req, res) {
+    async loginUser(req, res) {
         try {
             const userData = await userModel.findOne(req.body.username);
             if(!userData) {
@@ -55,11 +55,29 @@ class userController {
             }
             req.session.user = {user_id: userData.id, username: userData.username};
             res.status(201).json({
-                message: 'User logged in',
+                message: `User logged in. Welcome back, ${req.session.user.username}!`,
                 user_session: req.session.user
             });
         } catch (error) {
             res.status(500).json({message: 'Error logging in user', error: error.message});
+        }
+    }
+
+    async changeRole(req, res) {
+        try {
+            const userId = req.params.id;
+            const newRole = req.body.role;
+            const affectedRows = await userModel.update(userId, {role: newRole});
+            if (affectedRows === 0) {
+                return res.status(404).json({ error: 'User not found or no changes made.' });
+            }
+            res.status(201).json({
+                message: `User with id ${userId} role updated to ${newRole}`,
+                user: { id: userId, role: newRole }
+            });
+        } catch (error) {
+            res.status(500).json({ error: 'An error occurred while updating the user role.' });
+            console.error('Error updating user role:', error);
         }
     }
 }
