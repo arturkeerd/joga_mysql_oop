@@ -10,8 +10,8 @@ class UserModel extends BaseSQLModel {
         return users;
     }
 
-    async findOne(id) {
-        const user = await super.findOne('id', id);
+    async findOne(username) {
+        const user = await super.findOne('username', username);
         return user;
     }
 
